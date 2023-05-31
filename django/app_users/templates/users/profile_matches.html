@@ -1,0 +1,59 @@
+{% extends 'user_base.html' %}
+{% block title %} Matches {% endblock %}
+
+{% block user_content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 mt-3 offset-md-4">
+            <h2>{{user.username.title}}'s Matches</h2>
+        </div>
+        <div class="col-md-12 mt-3">
+            {% if user_matches %}
+            <p>Here is a list of your matches.</p>
+            {% else %}
+            <p>You do not currently have any matches :-(</p>
+            <p>Click on swipe to swipe socks and increase your chances of finding a match!</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        {% if user_matches %}
+        {% for match in user_matches %}
+        <div class="col-md-6">
+            <div class="card text-center h-100">
+                {% if match.user == request.user %}
+                {% if match.other.get_picture_urls %}
+                <img src="{{match.other.get_picture_urls.0}}" alt="" class="circle-img">
+                {% endif %}
+                <div class="card-body card-center align-self-center" style="word-wrap:break-word">
+                    <h5 class="card-title">{{ match.other.username.title }}</h5>
+                    <div class="btn-group">
+                        <a href="{% url 'app_users:user-match-profile-details' match.other.username %}"
+                            class="btn btn-primary">View Profile</a>
+                        <a href="{% url 'app_chat:chat' match.other.username %}" class="btn btn-primary">Chat</a>
+                    </div>
+                </div>
+                {% else %}
+                {% if match.user.get_picture_urls %}
+                <img src="{{match.user.get_picture_urls.0}}" alt="" class="circle-img">
+                {% endif %}
+                <div class="card-body card-center align-self-center" style="word-wrap:break-word">
+                    <h5 class="card-title">{{ match.user.username.title }}</h5>
+                    <div class="btn-group">
+                        <a href="{% url 'app_users:user-match-profile-details' match.user.username %}"
+                            class="btn btn-primary">View Profile</a>
+                        <a href="{% url 'app_chat:chat' match.user.username %}" class="btn btn-primary">Chat</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}

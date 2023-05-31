@@ -1,0 +1,21 @@
+{% extends "user_base.html" %}
+{% load crispy_forms_tags %}
+{% block title %} Update Profile {% endblock %}
+{% block user_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mt-3 offset-md-2">
+            <h3>Revise/ edit {{user.username.title}}'s profile</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 mt-3 offset-md-2">
+            <form method="post" action="">
+                {% csrf_token %}
+                {{ form_user_profile|crispy }}
+                <button class="btn" type="submit">Store profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

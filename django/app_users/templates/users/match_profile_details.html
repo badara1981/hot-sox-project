@@ -1,0 +1,121 @@
+{% extends 'user_base.html' %}
+{% block title %} Profile {% endblock %}
+{% block user_content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Your match {{user.username.title}}'s profile</h3>
+            {% if user.get_picture_urls %}
+            <div class="circle-container">
+                {% for picture_url in user.get_picture_urls %}
+                <div class="circle-img" id="profile-pic-{{ forloop.counter }}">
+                    <img src="{{ picture_url }}" alt="">
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>No pictures available</p>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            {% if user.first_name %}
+            <span class="col-md-6" style="float:left; display:inline; word-wrap:break-word;">
+                <strong>{{ user.first_name }}</strong>
+            </span>
+            {% else %}
+            <span class="col-md-6" style="float:left; display:inline; word-wrap:break-word;">
+                <strong>Anonymous Socker</strong>
+            </span>
+            {% endif %}
+            <span class="col-md-6" style="float:right; display:inline; word-wrap:break-word;">
+                {{ user_detail.age }} years old
+            </span>
+            <span class="col-md-6 style=" float:right; display:inline; word-wrap:break-word;"><strong>About</strong>
+                <span class="col-md-6" style="float:right; display:inline; word-wrap:break-word;">
+                    Lives in {{ user_detail.city }}, {{ distance }}km away
+                </span>
+            </span>
+
+            <span class="col-md-12" style=" word-wrap:break-word;">
+                <p>{{ user_detail.about }}</p>
+            </span>
+
+            <span class="col-md-6" style="float:left; display:inline; word-wrap:break-word;">
+                {% if user_detail.instagram %}
+                <a href="{{ user_detail.instagram }}" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                {% endif %}
+                {% if user_detail.facebook %}
+                <a href="{{ user_detail.facebook }}" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+                {% endif %}
+                {% if user_detail.twitter %}
+                <a href="{{ user_detail.twitter }}" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                {% endif %}
+                {% if user_detail.spotify %}
+                <a href="{{ user_detail.spotify }}" target="_blank"><i class="fa-brands fa-spotify"></i></a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <a href="{% url 'app_chat:chat' user_detail.username %}" class="btn btn-primary">Start a chat</a>
+                <a href="{% url 'app_users:user-matches' %}" class="btn btn-primary">Back to matches</a>
+            </div>
+            <div class="col-md-1 offset-7">
+                <button class="btn delete-button" data-bs-toggle="modal" data-bs-target="#deleteMatchModal"><i
+                        class="fa-solid fa-trash-can"></i></a>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="col-md-12 card" style="padding: 15px">
+        {{ map|safe }}
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="deleteMatchModal" aria-labelledby="deleteMatchModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="deleteMatchModalLabel">You are about to unmatch
+                    {{user_detail.username.title}} !</h4>
+            </div>
+            <div class="modal-body">You will not be able to chat with {{user_detail.username.title}} anymore. All the socks of this user will
+                be hidden from you. Are you sure about this?
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-bs-dismiss="modal">Keep this match</button>
+                <a href="{% url 'app_users:user-match-delete' user_detail.username %}" class="btn btn-danger"
+                    id="confirm-delete">Delete this match</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rotate the user profile picture -->
+<script>
+    const pictures = document.querySelectorAll('.circle-img');
+    // Hide all pictures at the beginning
+    for (let i = 1; i < pictures.length; i++) {
+        pictures[i].style.display = 'none';
+    }
+    function changePicture() {
+        let pictures = document.querySelectorAll('.circle-img');
+        let index = 0;
+        setInterval(function () {
+            pictures[index].style.display = 'none';
+            index = (index + 1) % pictures.length;
+            pictures[index].style.display = 'block';
+        }, 5000);
+    }
+    changePicture();
+</script>
+
+{% endblock %}
